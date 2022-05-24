@@ -9,8 +9,9 @@ void main() {
 
 // Class State auxiliar para o widget com estado.
 class AppState extends State<AppQuestionState> {
-  var selected = 0;
-  final List<Map<String, Object>> questions = [
+  var _selected = 0;
+  // O '_' seta um método ou atributo como privado a folha de código.
+  final List<Map<String, Object>> _questions = const [
     {
       'text': 'What is your favorite color?',
       'answer': ['Black', 'White', 'Grey'],
@@ -27,24 +28,25 @@ class AppState extends State<AppQuestionState> {
 
   //Função de responsta.
   void _answer() {
-    setState(() {
-      if (selected < (questions.length - 1)) {
-        selected++;
-      } else {
-        selected = 0;
-      }
-    });
+    if (hasSelectedAnswer) {
+      setState(() {
+        _selected++;
+      });
+    }
+  }
+
+  bool get hasSelectedAnswer {
+    return _selected < _questions.length;
   }
 
   // Cria um método do tipo widget
   // Que recebe um argumento do tipo BuildContext.
   @override
   Widget build(BuildContext context) {
-    List<Widget> responses = [];
-
-    for (var answer in questions[selected].cast()['answer']) {
-      responses.add(Answer(answer, _answer));
-    }
+    // Retorna as perguntas se ainda hover índice disponível. Senão retorna vazio.
+    List<String> responses =
+        // If in line do dart.
+        hasSelectedAnswer ? _questions[_selected].cast()['answer'] : [];
 
     return MaterialApp(
       home: Scaffold(
@@ -54,13 +56,16 @@ class AppState extends State<AppQuestionState> {
           backgroundColor: Colors.black,
         ),
         // Define o corpo da aplicação.
-        body: Column(
-          children: <Widget>[
-            Question(questions[selected]['text'].toString()),
-            // Mostra o conteúdo das respostas de forma iterável.
-            ...responses,
-          ],
-        ),
+        body: hasSelectedAnswer
+            ? Column(
+                children: <Widget>[
+                  Question(_questions[_selected]['text'].toString()),
+                  // Mostra o conteúdo das respostas de forma iterável
+                  // Usando uma arrow function para realizar o map do conteúdo.
+                  ...responses.map((t) => Answer(t, _answer)).toList(),
+                ],
+              )
+            : null,
       ),
     );
   }
