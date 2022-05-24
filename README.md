@@ -1,6 +1,6 @@
-# project
+# Flutter quiz.
 
-A new Flutter project.
+My first flutter project.
 
 ## Getting Started
 
