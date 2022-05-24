@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './question.dart';
-import './answer.dart';
+import 'quiz.dart';
+import './result.dart';
 
 void main() {
   // runApp(new AppQuestion());
@@ -10,27 +10,41 @@ void main() {
 // Class State auxiliar para o widget com estado.
 class AppState extends State<AppQuestionState> {
   var _selected = 0;
+  var _score = 0;
   // O '_' seta um método ou atributo como privado a folha de código.
   final List<Map<String, Object>> _questions = const [
     {
       'text': 'What is your favorite color?',
-      'answer': ['Black', 'White', 'Grey'],
+      'answer': [
+        {'text': 'Black', 'points': 10},
+        {'text': 'Grey', 'points': 5},
+        {'text': 'White', 'points': 1},
+      ],
     },
     {
       'text': 'What is your favorite animal?',
-      'answer': ['Dog', 'Cat', 'Bird'],
+      'answer': [
+        {'text': 'Cat', 'points': 10},
+        {'text': 'Dog', 'points': 5},
+        {'text': 'Bird', 'points': 1},
+      ],
     },
     {
       'text': 'What is your favorite food?',
-      'answer': ['Pizza', 'Fruits', 'Fast food'],
+      'answer': [
+        {'text': 'Fruits', 'points': 10},
+        {'text': 'Pizza', 'points': 5},
+        {'text': 'Fast food', 'points': 1},
+      ],
     },
   ];
 
-  //Função de responsta.
-  void _answer() {
+  //Função que controla o estado da aplicaçao.
+  void _answer(int score) {
     if (hasSelectedAnswer) {
       setState(() {
         _selected++;
+        _score += score;
       });
     }
   }
@@ -43,11 +57,6 @@ class AppState extends State<AppQuestionState> {
   // Que recebe um argumento do tipo BuildContext.
   @override
   Widget build(BuildContext context) {
-    // Retorna as perguntas se ainda hover índice disponível. Senão retorna vazio.
-    List<String> responses =
-        // If in line do dart.
-        hasSelectedAnswer ? _questions[_selected].cast()['answer'] : [];
-
     return MaterialApp(
       home: Scaffold(
         // Define a barra principal do app.
@@ -57,15 +66,12 @@ class AppState extends State<AppQuestionState> {
         ),
         // Define o corpo da aplicação.
         body: hasSelectedAnswer
-            ? Column(
-                children: <Widget>[
-                  Question(_questions[_selected]['text'].toString()),
-                  // Mostra o conteúdo das respostas de forma iterável
-                  // Usando uma arrow function para realizar o map do conteúdo.
-                  ...responses.map((t) => Answer(t, _answer)).toList(),
-                ],
+            ? Quiz(
+                selected: _selected,
+                questions: _questions,
+                answer: _answer,
               )
-            : null,
+            : Result(_score),
       ),
     );
   }
