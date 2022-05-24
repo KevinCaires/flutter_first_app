@@ -49,6 +49,13 @@ class AppState extends State<AppQuestionState> {
     }
   }
 
+  void reset() {
+    setState(() {
+      _selected = 0;
+      _score = 0;
+    });
+  }
+
   bool get hasSelectedAnswer {
     return _selected < _questions.length;
   }
@@ -61,6 +68,7 @@ class AppState extends State<AppQuestionState> {
       home: Scaffold(
         // Define a barra principal do app.
         appBar: AppBar(
+          centerTitle: true,
           title: Text('Questions'),
           backgroundColor: Colors.black,
         ),
@@ -71,7 +79,7 @@ class AppState extends State<AppQuestionState> {
                 questions: _questions,
                 answer: _answer,
               )
-            : Result(_score),
+            : Result(_score, reset),
       ),
     );
   }
